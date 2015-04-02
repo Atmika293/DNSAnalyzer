@@ -32,14 +32,17 @@ public class Activity {
 		time = 0;
 		byte[] payload = PayloadRetriever.getUDPPayload(ProtocolStateMachine.currentPacket);
 		String trID = DNSWrapper.getTransactionID(payload);
+		ResultSet rs;
 		if(DNSWrapper.isQuery(payload)){
 			time = ProtocolStateMachine.currentPacket.getCaptureHeader().timestampInMillis();
 			//ProtocolStateMachine.Queries.put(trID, Long.valueOf(time));
 			System.out.println(trID + " " + time);
 			try {
-				ResultSet rs = ProtocolStateMachine.dbConnect.getConnect().prepareStatement("SELECT TRANSACTION_ID FROM "+ProtocolStateMachine.dbConnect.getDBName()+".Query "+"WHERE TRANSACTION_ID="+trID).executeQuery();
+				rs = ProtocolStateMachine.dbConnect.getConnect().prepareStatement("SELECT TRANSACTION_ID FROM "+ProtocolStateMachine.dbConnect.getDBName()+".Packets "+"WHERE TRANSACTION_ID="+trID+" AND TYPE_OF_PACKET=\'Query\'").executeQuery();
+				//rs1 = ProtocolStateMachine.dbConnect.retrieveResultSet("Packets", "TRANSACTION_ID", "TRANSACTION_ID="+trID+"AND TYPE_OF_PACKET=\'Query\'");
 				if(!rs.first())
-					ProtocolStateMachine.dbConnect.populateTable("INSERT INTO "+ProtocolStateMachine.dbConnect.getDBName()+".Query "+"VALUES(?,?,?)",trID,new Long(time),ProtocolStateMachine.currentPacket);
+					//ProtocolStateMachine.dbConnect.populateTable("Query",trID,new Long(time),ProtocolStateMachine.currentPacket);
+					ProtocolStateMachine.dbConnect.populateTable("Packets",new Long(time),trID,"Query",DNSWrapper.gettypeOfQuery(payload),DNSWrapper.isResponseServerAuthoritative(payload),DNSWrapper.isRecursionDesired(payload),DNSWrapper.isRecursionAvailable(payload),DNSWrapper.getResponseCode(payload),DNSWrapper.getQuestionCount(payload),DNSWrapper.getAnswerCount(payload),DNSWrapper.getAuthorityRecordCount(payload),DNSWrapper.getAdditionalRecordCount(payload),DNSWrapper.getQuestionName(payload),DNSWrapper.getRecordTypeToBeReturned(payload),DNSWrapper.getQuestionClass(payload),ProtocolStateMachine.currentPacket);
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -49,7 +52,8 @@ public class Activity {
 		}
 		else{
 			try {
-				ResultSet rs = ProtocolStateMachine.dbConnect.getConnect().prepareStatement("SELECT TIME_STAMP FROM "+ProtocolStateMachine.dbConnect.getDBName()+".Query "+"WHERE TRANSACTION_ID="+trID).executeQuery(); //ProtocolStateMachine.dbConnect.retrieveResultSet("SELECT TIME_STAMP FROM "+ProtocolStateMachine.dbConnect.getDBName()+".Query "+"WHERE TRANSACTION_ID="+trID);
+				rs = ProtocolStateMachine.dbConnect.getConnect().prepareStatement("SELECT TIME_STAMP FROM "+ProtocolStateMachine.dbConnect.getDBName()+".Packets "+"WHERE TRANSACTION_ID="+trID+" AND TYPE_OF_PACKET=\'Query\'").executeQuery(); //ProtocolStateMachine.dbConnect.retrieveResultSet("SELECT TIME_STAMP FROM "+ProtocolStateMachine.dbConnect.getDBName()+".Query "+"WHERE TRANSACTION_ID="+trID);
+				//rs2 = ProtocolStateMachine.dbConnect.retrieveResultSet("Packets", "TIME_STAMP", "TRANSACTION_ID="+trID+"AND TYPE_OF_PACKET='Query'");
 				if(rs.first()){
 					time = rs.getLong("TIME_STAMP");
 				time_p = ProtocolStateMachine.currentPacket.getCaptureHeader().timestampInMillis();
@@ -86,8 +90,9 @@ public class Activity {
 		byte[] payload = PayloadRetriever.getUDPPayload(ProtocolStateMachine.currentPacket);
 		String trID = DNSWrapper.getTransactionID(payload);
 		try {
-			ResultSet rs = ProtocolStateMachine.dbConnect.getConnect().prepareStatement("SELECT TRANSACTION_ID FROM "+ProtocolStateMachine.dbConnect.getDBName()+".Query "+"WHERE TRANSACTION_ID="+trID).executeQuery();//ProtocolStateMachine.dbConnect.retrieveResultSet("SELECT TRANSACTION_ID FROM "+ProtocolStateMachine.dbConnect.getDBName()+".Query "+"WHERE TRANSACTION_ID="+t_ID);
-			if(rs.first()){	
+			ResultSet rs = ProtocolStateMachine.dbConnect.getConnect().prepareStatement("SELECT TRANSACTION_ID FROM "+ProtocolStateMachine.dbConnect.getDBName()+".Packets "+"WHERE TRANSACTION_ID="+trID+" AND TYPE_OF_PACKET=\'Query\'").executeQuery();//ProtocolStateMachine.dbConnect.retrieveResultSet("SELECT TRANSACTION_ID FROM "+ProtocolStateMachine.dbConnect.getDBName()+".Query "+"WHERE TRANSACTION_ID="+t_ID);
+			//ResultSet rs = ProtocolStateMachine.dbConnect.retrieveResultSet("Packets", "TRANSACTION_ID", "TRANSACTION_ID="+trID+"AND TYPE_OF_PACKET='Query'");
+			if(rs.first()){	 //Extra check;not necessary
 				if(DNSWrapper.getResponseCode(payload) == 0 && (DNSWrapper.getResourceRecordType(payload, DNSWrapper.getEndOfQuestionSection(payload)) != 6)){
 					SM.setCurrentState(new TransitionSupport(SM.getCurrentState(),SM.getState("C")));
 				}
@@ -122,7 +127,8 @@ public class Activity {
 		String trID = DNSWrapper.getTransactionID(payload);
 		long time = ProtocolStateMachine.currentPacket.getCaptureHeader().timestampInMillis();
 		try {
-			ProtocolStateMachine.dbConnect.populateTable("INSERT INTO "+ProtocolStateMachine.dbConnect.getDBName()+".Response "+"VALUES(?,?)",trID,ProtocolStateMachine.currentPacket);
+			//ProtocolStateMachine.dbConnect.populateTable("Response",trID,ProtocolStateMachine.currentPacket);
+			ProtocolStateMachine.dbConnect.populateTable("Packets",new Long(time),trID,"Response",DNSWrapper.gettypeOfQuery(payload),DNSWrapper.isResponseServerAuthoritative(payload),DNSWrapper.isRecursionDesired(payload),DNSWrapper.isRecursionAvailable(payload),DNSWrapper.getResponseCode(payload),DNSWrapper.getQuestionCount(payload),DNSWrapper.getAnswerCount(payload),DNSWrapper.getAuthorityRecordCount(payload),DNSWrapper.getAdditionalRecordCount(payload),DNSWrapper.getQuestionName(payload),DNSWrapper.getRecordTypeToBeReturned(payload),DNSWrapper.getQuestionClass(payload),ProtocolStateMachine.currentPacket);
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -131,7 +137,8 @@ public class Activity {
 		if(DNSWrapper.getAnswerCount(payload) == 0 && DNSWrapper.getResourceRecordType(payload, DNSWrapper.getEndOfQuestionSection(payload)) == 2){
 			//SM.setCurrentState(new TransitionSupport(SM.getCurrentState(),SM.getState("A")));
 			try {
-				ProtocolStateMachine.dbConnect.populateTable("INSERT INTO "+ProtocolStateMachine.dbConnect.getDBName()+".Referral "+"VALUES(?,?)",trID,new Long(time));
+				//ProtocolStateMachine.dbConnect.populateTable("Referral",trID,new Long(time));
+				ProtocolStateMachine.dbConnect.populateTable("Packets",new Long(time),trID,"Referral",DNSWrapper.gettypeOfQuery(payload),DNSWrapper.isResponseServerAuthoritative(payload),DNSWrapper.isRecursionDesired(payload),DNSWrapper.isRecursionAvailable(payload),DNSWrapper.getResponseCode(payload),DNSWrapper.getQuestionCount(payload),DNSWrapper.getAnswerCount(payload),DNSWrapper.getAuthorityRecordCount(payload),DNSWrapper.getAdditionalRecordCount(payload),DNSWrapper.getQuestionName(payload),DNSWrapper.getRecordTypeToBeReturned(payload),DNSWrapper.getQuestionClass(payload),ProtocolStateMachine.currentPacket);
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -183,12 +190,16 @@ public class Activity {
 		long time,time_p;
 		byte[] payload = PayloadRetriever.getUDPPayload(ProtocolStateMachine.currentPacket);
 		String trID = DNSWrapper.getTransactionID(payload);
-		ResultSet rs1,rs2;
+		time = ProtocolStateMachine.currentPacket.getCaptureHeader().timestampInMillis();
+		//ResultSet rs1,rs2;
+		ResultSet rs;
 		if(DNSWrapper.isResponse(payload)){
 			try {
-				rs1 = ProtocolStateMachine.dbConnect.getConnect().prepareStatement("SELECT TRANSACTION_ID FROM "+ProtocolStateMachine.dbConnect.getDBName()+".Query "+"WHERE TRANSACTION_ID="+trID).executeQuery();//ProtocolStateMachine.dbConnect.retrieveResultSet("SELECT TRANSACTION_ID FROM "+ProtocolStateMachine.dbConnect.getDBName()+".Query "+"WHERE TRANSACTION_ID="+trID);
-				if(rs1.first()){	
-					ProtocolStateMachine.dbConnect.populateTable("INSERT INTO "+ProtocolStateMachine.dbConnect.getDBName()+".Response "+"VALUES(?,?)",trID,ProtocolStateMachine.currentPacket);
+				rs = ProtocolStateMachine.dbConnect.getConnect().prepareStatement("SELECT TRANSACTION_ID FROM "+ProtocolStateMachine.dbConnect.getDBName()+".Packets "+"WHERE TRANSACTION_ID="+trID+" AND TYPE_OF_PACKET=\'Query\'").executeQuery();//ProtocolStateMachine.dbConnect.retrieveResultSet("SELECT TRANSACTION_ID FROM "+ProtocolStateMachine.dbConnect.getDBName()+".Query "+"WHERE TRANSACTION_ID="+trID);
+				//rs1 = ProtocolStateMachine.dbConnect.retrieveResultSet("Packets", "TRANSACTION_ID", "TRANSACTION_ID="+trID+"AND TYPE_OF_PACKET='Query'");
+				if(rs.first()){	
+					//ProtocolStateMachine.dbConnect.populateTable("Response",trID,ProtocolStateMachine.currentPacket);
+					ProtocolStateMachine.dbConnect.populateTable("Packets",new Long(time),trID,"Response",DNSWrapper.gettypeOfQuery(payload),DNSWrapper.isResponseServerAuthoritative(payload),DNSWrapper.isRecursionDesired(payload),DNSWrapper.isRecursionAvailable(payload),DNSWrapper.getResponseCode(payload),DNSWrapper.getQuestionCount(payload),DNSWrapper.getAnswerCount(payload),DNSWrapper.getAuthorityRecordCount(payload),DNSWrapper.getAdditionalRecordCount(payload),DNSWrapper.getQuestionName(payload),DNSWrapper.getRecordTypeToBeReturned(payload),DNSWrapper.getQuestionClass(payload),ProtocolStateMachine.currentPacket);
 				}
 
 			} catch (SQLException e) {
@@ -200,9 +211,10 @@ public class Activity {
 		}
 		else{
 			try {
-				rs2 =  ProtocolStateMachine.dbConnect.getConnect().prepareStatement("SELECT TIME_STAMP FROM "+ProtocolStateMachine.dbConnect.getDBName()+".Referral "+"WHERE TRANSACTION_ID="+trID+" ORDER BY TIME_STAMP DESC").executeQuery();//ProtocolStateMachine.dbConnect.retrieveResultSet("SELECT TIME_STAMP FROM "+ProtocolStateMachine.dbConnect.getDBName()+".Referral "+"WHERE TRANSACTION_ID="+trID+" ORDER BY TIME_STAMP DESC");
-				if(rs2.first()){
-					time = rs2.getLong("TIME_STAMP");
+				rs =  ProtocolStateMachine.dbConnect.getConnect().prepareStatement("SELECT TIME_STAMP FROM "+ProtocolStateMachine.dbConnect.getDBName()+".Packets "+"WHERE TRANSACTION_ID="+trID+" AND TYPE_OF_PACKET=\'Query\'"+" ORDER BY TIME_STAMP DESC").executeQuery();//ProtocolStateMachine.dbConnect.retrieveResultSet("SELECT TIME_STAMP FROM "+ProtocolStateMachine.dbConnect.getDBName()+".Referral "+"WHERE TRANSACTION_ID="+trID+" ORDER BY TIME_STAMP DESC");
+				//rs2 = ProtocolStateMachine.dbConnect.retrieveResultSet("Packets", "TIME_STAMP", "TRANSACTION_ID="+trID+" AND TYPE_OF_PACKET='Referral' ORDER BY TIME_STAMP DESC");
+				if(rs.first()){
+					time = rs.getLong("TIME_STAMP");
 				time_p = ProtocolStateMachine.currentPacket.getCaptureHeader().timestampInMillis();
 				if(ProtocolStateMachine.isTimeOut(time_p,time)){
 					SM.setCurrentState(new TransitionSupport(SM.getCurrentState(),SM.getEndState()));

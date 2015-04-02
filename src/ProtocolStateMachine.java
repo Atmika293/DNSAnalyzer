@@ -44,14 +44,16 @@ public class ProtocolStateMachine {
 	public static void main(String[] args){
 		ProtocolStateMachine psm = new ProtocolStateMachine(5,"h2","~/","DNSPackets"); //4
 		try {
-			dbConnect.dropTable("Response");
-			dbConnect.dropTable("Referral");
-			dbConnect.dropTable("Query");
-			
 			dbConnect.createSchema(dbConnect.getDBName());
-			dbConnect.createTable("CREATE TABLE IF NOT EXISTS "+dbConnect.getDBName()+".Query"+"(TRANSACTION_ID VARCHAR(255) PRIMARY KEY, "+"TIME_STAMP BIGINT, "+"PACKET OTHER)");
-			dbConnect.createTable("CREATE TABLE IF NOT EXISTS "+dbConnect.getDBName()+".Response"+"(TRANSACTION_ID VARCHAR(255), "+"PACKET OTHER)");//, "+"FOREIGN KEY fk (TRANSACTION_ID) REFERENCES "+dbConnect.getDBName()+".Query(TRANSACTION_ID))");
-			dbConnect.createTable("CREATE TABLE IF NOT EXISTS "+dbConnect.getDBName()+".Referral"+"(TRANSACTION_ID VARCHAR(255), "+"TIME_STAMP BIGINT)");
+			//dbConnect.dropTable("Response");
+			//dbConnect.dropTable("Referral");
+			//dbConnect.dropTable("Query");
+			dbConnect.dropTable("Packets");
+			
+			dbConnect.createTable("Packets","TIME_STAMP BIGINT, "+"TRANSACTION_ID VARCHAR(255), "+"TYPE_OF_PACKET VARCHAR(255), "+"TYPE_OF_QUERY SMALLINT, "+"AUTH_RESPONSE BOOLEAN, "+"RECURSION_DESIRED BOOLEAN, "+"RECURSION_AVAILABLE BOOLEAN, "+"RESPONSE_CODE SMALLINT, "+"QUESTION_COUNT SMALLINT, "+"RESPONSE_COUNT SMALLINT, "+"AUTHORITY_COUNT SMALLINT, "+"ADDITIONAL_COUNT SMALLINT, "+"QUESTION_NAME VARCHAR(255), "+"QUESTION_TYPE SMALLINT, "+"QUESTION_CLASS SMALLINT, "+"PACKET OTHER");
+			//dbConnect.createTable("Query","TRANSACTION_ID VARCHAR(255) PRIMARY KEY, "+"TIME_STAMP BIGINT, "+"PACKET OTHER");
+			//dbConnect.createTable("Response","TRANSACTION_ID VARCHAR(255), "+"PACKET OTHER");//, "+"FOREIGN KEY fk (TRANSACTION_ID) REFERENCES "+dbConnect.getDBName()+".Query(TRANSACTION_ID))");
+			//dbConnect.createTable("Referral","TRANSACTION_ID VARCHAR(255), "+"TIME_STAMP BIGINT");
 		} catch (SQLException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();

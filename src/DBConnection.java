@@ -88,12 +88,13 @@ public class DBConnection {
 	        if (stmt != null) { stmt.close(); }
 	    }
 	}
-	public void createTable(String createString) throws SQLException {
+	public void createTable(String tableName,String columns) throws SQLException {//createString
 
 	    Statement stmt = null;
 	    try {
 	        stmt = this.connect.createStatement();
-	        stmt.executeUpdate(createString);
+	        //stmt.executeUpdate(createString);
+	        stmt.executeUpdate("CREATE TABLE IF NOT EXISTS "+this.dbname+"."+tableName+"("+columns+")");
 	    } catch (SQLException e) {
 	        e.printStackTrace();
 	    } finally {
@@ -101,12 +102,16 @@ public class DBConnection {
 	    }
 	}
 	
-	public void populateTable(String populateTable,Object...parameters) throws SQLException {
-
+	public void populateTable(String tableName,Object...parameters) throws SQLException {
+		int i;
 	    PreparedStatement pstmt = null;
 	    try {
+	    	String QMarks = "?";
+	    	for(i = 0;i < parameters.length - 1;i++)
+	    		QMarks = QMarks + ",?";
+	    	String populateTable = "INSERT INTO "+this.dbname+"."+tableName+" VALUES(" +QMarks+ ")";
 	        pstmt = this.connect.prepareStatement(populateTable);
-	        for(int i = 1;i <= parameters.length;i++)
+	        for(i = 1;i <= parameters.length;i++)
 	        	pstmt.setObject(i, parameters[i-1]);
 	        pstmt.executeUpdate();
 
@@ -117,11 +122,12 @@ public class DBConnection {
 	    }
 	}
 	
-	public ResultSet retrieveResultSet(String retrieve) throws SQLException {
+	public ResultSet retrieveResultSet(String tableName,String columns,String conditions) throws SQLException {
 
 	    PreparedStatement pstmt = null;
 	    ResultSet rs = null;
 	    try {
+	    	String retrieve = "SELECT "+columns+" FROM "+this.dbname+"."+tableName+" WHERE "+conditions;
 	        pstmt = this.connect.prepareStatement(retrieve);
 	       // for(int i = 1;i <= parameters.length;i++)
 	        //	pstmt.setObject(i, parameters[i-1]);
