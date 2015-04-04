@@ -220,6 +220,7 @@ public class Activity {
 					SM.setCurrentState(new TransitionSupport(SM.getCurrentState(),SM.getEndState()));
 				}
 				else{
+					ProtocolStateMachine.dbConnect.populateTable("Packets",new Long(time),trID,"Query",DNSWrapper.gettypeOfQuery(payload),DNSWrapper.isResponseServerAuthoritative(payload),DNSWrapper.isRecursionDesired(payload),DNSWrapper.isRecursionAvailable(payload),DNSWrapper.getResponseCode(payload),DNSWrapper.getQuestionCount(payload),DNSWrapper.getAnswerCount(payload),DNSWrapper.getAuthorityRecordCount(payload),DNSWrapper.getAdditionalRecordCount(payload),DNSWrapper.getQuestionName(payload),DNSWrapper.getRecordTypeToBeReturned(payload),DNSWrapper.getQuestionClass(payload),ProtocolStateMachine.currentPacket);
 					SM.setCurrentState(new TransitionSupport(SM.getCurrentState(),SM.getState("A")));
 				}
 			}
