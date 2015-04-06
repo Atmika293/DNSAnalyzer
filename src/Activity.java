@@ -42,7 +42,7 @@ public class Activity {
 				//rs1 = ProtocolStateMachine.dbConnect.retrieveResultSet("Packets", "TRANSACTION_ID", "TRANSACTION_ID="+trID+"AND TYPE_OF_PACKET=\'Query\'");
 				if(!rs.first())
 					//ProtocolStateMachine.dbConnect.populateTable("Query",trID,new Long(time),ProtocolStateMachine.currentPacket);
-					ProtocolStateMachine.dbConnect.populateTable("Packets",new Long(time),trID,"Query",DNSWrapper.gettypeOfQuery(payload),DNSWrapper.isResponseServerAuthoritative(payload),DNSWrapper.isRecursionDesired(payload),DNSWrapper.isRecursionAvailable(payload),DNSWrapper.getResponseCode(payload),DNSWrapper.getQuestionCount(payload),DNSWrapper.getAnswerCount(payload),DNSWrapper.getAuthorityRecordCount(payload),DNSWrapper.getAdditionalRecordCount(payload),DNSWrapper.getQuestionName(payload),DNSWrapper.getRecordTypeToBeReturned(payload),DNSWrapper.getQuestionClass(payload),ProtocolStateMachine.currentPacket);
+					ProtocolStateMachine.dbConnect.populateTable("Packets",new Long(time),trID,"Query",DNSWrapper.gettypeOfQuery(payload),DNSWrapper.isResponseServerAuthoritative(payload),DNSWrapper.isRecursionDesired(payload),DNSWrapper.isRecursionAvailable(payload),DNSWrapper.getResponseCode(payload),DNSWrapper.getQuestionCount(payload),DNSWrapper.getAnswerCount(payload),DNSWrapper.getAuthorityRecordCount(payload),DNSWrapper.getAdditionalRecordCount(payload),DNSWrapper.getQuestionName(payload),DNSWrapper.getRecordTypeToBeReturned(payload),DNSWrapper.getQuestionClass(payload),payload);
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -128,7 +128,7 @@ public class Activity {
 		long time = ProtocolStateMachine.currentPacket.getCaptureHeader().timestampInMillis();
 		try {
 			//ProtocolStateMachine.dbConnect.populateTable("Response",trID,ProtocolStateMachine.currentPacket);
-			ProtocolStateMachine.dbConnect.populateTable("Packets",new Long(time),trID,"Response",DNSWrapper.gettypeOfQuery(payload),DNSWrapper.isResponseServerAuthoritative(payload),DNSWrapper.isRecursionDesired(payload),DNSWrapper.isRecursionAvailable(payload),DNSWrapper.getResponseCode(payload),DNSWrapper.getQuestionCount(payload),DNSWrapper.getAnswerCount(payload),DNSWrapper.getAuthorityRecordCount(payload),DNSWrapper.getAdditionalRecordCount(payload),DNSWrapper.getQuestionName(payload),DNSWrapper.getRecordTypeToBeReturned(payload),DNSWrapper.getQuestionClass(payload),ProtocolStateMachine.currentPacket);
+			ProtocolStateMachine.dbConnect.populateTable("Packets",new Long(time),trID,"Response",DNSWrapper.gettypeOfQuery(payload),DNSWrapper.isResponseServerAuthoritative(payload),DNSWrapper.isRecursionDesired(payload),DNSWrapper.isRecursionAvailable(payload),DNSWrapper.getResponseCode(payload),DNSWrapper.getQuestionCount(payload),DNSWrapper.getAnswerCount(payload),DNSWrapper.getAuthorityRecordCount(payload),DNSWrapper.getAdditionalRecordCount(payload),DNSWrapper.getQuestionName(payload),DNSWrapper.getRecordTypeToBeReturned(payload),DNSWrapper.getQuestionClass(payload),payload);
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -138,7 +138,7 @@ public class Activity {
 			//SM.setCurrentState(new TransitionSupport(SM.getCurrentState(),SM.getState("A")));
 			try {
 				//ProtocolStateMachine.dbConnect.populateTable("Referral",trID,new Long(time));
-				ProtocolStateMachine.dbConnect.populateTable("Packets",new Long(time),trID,"Referral",DNSWrapper.gettypeOfQuery(payload),DNSWrapper.isResponseServerAuthoritative(payload),DNSWrapper.isRecursionDesired(payload),DNSWrapper.isRecursionAvailable(payload),DNSWrapper.getResponseCode(payload),DNSWrapper.getQuestionCount(payload),DNSWrapper.getAnswerCount(payload),DNSWrapper.getAuthorityRecordCount(payload),DNSWrapper.getAdditionalRecordCount(payload),DNSWrapper.getQuestionName(payload),DNSWrapper.getRecordTypeToBeReturned(payload),DNSWrapper.getQuestionClass(payload),ProtocolStateMachine.currentPacket);
+				ProtocolStateMachine.dbConnect.populateTable("Packets",new Long(time),trID,"Referral",DNSWrapper.gettypeOfQuery(payload),DNSWrapper.isResponseServerAuthoritative(payload),DNSWrapper.isRecursionDesired(payload),DNSWrapper.isRecursionAvailable(payload),DNSWrapper.getResponseCode(payload),DNSWrapper.getQuestionCount(payload),DNSWrapper.getAnswerCount(payload),DNSWrapper.getAuthorityRecordCount(payload),DNSWrapper.getAdditionalRecordCount(payload),DNSWrapper.getQuestionName(payload),DNSWrapper.getRecordTypeToBeReturned(payload),DNSWrapper.getQuestionClass(payload),payload);
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -199,7 +199,7 @@ public class Activity {
 				//rs1 = ProtocolStateMachine.dbConnect.retrieveResultSet("Packets", "TRANSACTION_ID", "TRANSACTION_ID="+trID+"AND TYPE_OF_PACKET='Query'");
 				if(rs.first()){	
 					//ProtocolStateMachine.dbConnect.populateTable("Response",trID,ProtocolStateMachine.currentPacket);
-					ProtocolStateMachine.dbConnect.populateTable("Packets",new Long(time),trID,"Response",DNSWrapper.gettypeOfQuery(payload),DNSWrapper.isResponseServerAuthoritative(payload),DNSWrapper.isRecursionDesired(payload),DNSWrapper.isRecursionAvailable(payload),DNSWrapper.getResponseCode(payload),DNSWrapper.getQuestionCount(payload),DNSWrapper.getAnswerCount(payload),DNSWrapper.getAuthorityRecordCount(payload),DNSWrapper.getAdditionalRecordCount(payload),DNSWrapper.getQuestionName(payload),DNSWrapper.getRecordTypeToBeReturned(payload),DNSWrapper.getQuestionClass(payload),ProtocolStateMachine.currentPacket);
+					ProtocolStateMachine.dbConnect.populateTable("Packets",new Long(time),trID,"Response",DNSWrapper.gettypeOfQuery(payload),DNSWrapper.isResponseServerAuthoritative(payload),DNSWrapper.isRecursionDesired(payload),DNSWrapper.isRecursionAvailable(payload),DNSWrapper.getResponseCode(payload),DNSWrapper.getQuestionCount(payload),DNSWrapper.getAnswerCount(payload),DNSWrapper.getAuthorityRecordCount(payload),DNSWrapper.getAdditionalRecordCount(payload),DNSWrapper.getQuestionName(payload),DNSWrapper.getRecordTypeToBeReturned(payload),DNSWrapper.getQuestionClass(payload),payload);
 				}
 
 			} catch (SQLException e) {
@@ -220,7 +220,7 @@ public class Activity {
 					SM.setCurrentState(new TransitionSupport(SM.getCurrentState(),SM.getEndState()));
 				}
 				else{
-					ProtocolStateMachine.dbConnect.populateTable("Packets",new Long(time),trID,"Query",DNSWrapper.gettypeOfQuery(payload),DNSWrapper.isResponseServerAuthoritative(payload),DNSWrapper.isRecursionDesired(payload),DNSWrapper.isRecursionAvailable(payload),DNSWrapper.getResponseCode(payload),DNSWrapper.getQuestionCount(payload),DNSWrapper.getAnswerCount(payload),DNSWrapper.getAuthorityRecordCount(payload),DNSWrapper.getAdditionalRecordCount(payload),DNSWrapper.getQuestionName(payload),DNSWrapper.getRecordTypeToBeReturned(payload),DNSWrapper.getQuestionClass(payload),ProtocolStateMachine.currentPacket);
+					ProtocolStateMachine.dbConnect.populateTable("Packets",new Long(time),trID,"Query",DNSWrapper.gettypeOfQuery(payload),DNSWrapper.isResponseServerAuthoritative(payload),DNSWrapper.isRecursionDesired(payload),DNSWrapper.isRecursionAvailable(payload),DNSWrapper.getResponseCode(payload),DNSWrapper.getQuestionCount(payload),DNSWrapper.getAnswerCount(payload),DNSWrapper.getAuthorityRecordCount(payload),DNSWrapper.getAdditionalRecordCount(payload),DNSWrapper.getQuestionName(payload),DNSWrapper.getRecordTypeToBeReturned(payload),DNSWrapper.getQuestionClass(payload),payload);
 					SM.setCurrentState(new TransitionSupport(SM.getCurrentState(),SM.getState("A")));
 				}
 			}
